@@ -71,20 +71,20 @@
 
 		<div class="card mb-3">
 			<h6 class="card-header">おすすめの本があればこちらから投稿してください</h6>
-			<form method="post" action="submit.php" name="comment_to_books" class="form">
-				<label for="book_name">書籍名</label>
+			<form class="p-3" method="post" action="submit.php" name="comment_to_books">
+				<label class="form-label" for="book_name">書籍名</label>
 				<br>
-				<input type="text" id="book_name" name="book_name" width="255"></input>
+				<input class="form-control" type="text" id="book_name" name="book_name"></input>
 				<br>
-				<label for="comment">感想</label>
+				<label class="form-lable" for="comment">感想</label>
 				<br>
-				<textarea id="comment" name="comment"></textarea>
+				<textarea class="form-control" id="comment" name="comment"></textarea>
 				<br>
-				<label for="link">リンク</label>
+				<label class="form-label" for="link">リンク</label>
 				<br>
-				<input type="text" id="link" name="link"></input>
+				<input class="form-control" type="text" id="link" name="link"></input>
 				<br>
-				<button class="submit_btn" type="submit">送信する</button>
+				<button  class="btn btn-secondary" type="submit">送信する</button>
 			</form>
 
 
