@@ -11,27 +11,12 @@
 	</head>
 
 	<body>
-		<!-- tableで成績を一覧表示　-->
 		<?php
-		$exams = $db->query('select * from exams, students where exams.student_id=students.id and');
+		$exams = $db->prepare('INSERT INTO exams SET test_id=?, student_id=?, japanese=?, english=?, science=?, society=?, mathematics=?, sum=?, created_at=NOW()');
+		$exams->execute(array($_POST['test_id'], $_POST['student_id'], $_POST['japanese'], $_POST['english'], $_POST['science'], $_POST['society'], $_POST['mathematics'], $_POST['sum']));
+		echo '登録が完了しました';
 		?>
-		<table>
-			<thead>
-				<tr>
-					<th>id</th><th>学生番号</th><th>テストの種類</th><th>国語</th><th>英語</th><th>理科</th><th>社会</th><th>数学</th><th>合計</th><th>制作日</th><th>更新日</th>
-				</tr>∫
-			</thead>
-			<tbody>
-				<?php while ($exam = $exams->fetch()): ?>
-					<tr>
-					<?php for ($i = 0; $i <= 30; $i++): ?>
-						<td><?php print($exam[$i]); ?></td>
-					<?php endfor; ?>
-					</tr>
-				<?php endwhile; ?>
-			</tbody>
-		</table>
-
+		<a href="index.php">戻る</a>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
 </html>	

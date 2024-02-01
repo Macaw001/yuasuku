@@ -11,26 +11,29 @@
 	</head>
 
 	<body>
-		<!-- tableで成績を一覧表示　-->
+		
 		<?php
-		$exams = $db->query('select * from exams, students where exams.student_id=students.id and');
+		$students = $db->query('SELECT * FROM students');
 		?>
 		<table>
 			<thead>
-				<tr>
-					<th>id</th><th>学生番号</th><th>テストの種類</th><th>国語</th><th>英語</th><th>理科</th><th>社会</th><th>数学</th><th>合計</th><th>制作日</th><th>更新日</th>
-				</tr>∫
+				<th>id</th><th>名前</th><th>学年</th><th>クラス</th><th>学籍番号</th><th>制作日</th><th>更新日</th>
 			</thead>
+			
 			<tbody>
-				<?php while ($exam = $exams->fetch()): ?>
-					<tr>
-					<?php for ($i = 0; $i <= 30; $i++): ?>
-						<td><?php print($exam[$i]); ?></td>
+				<?php while ($student = $students->fetch()): ?>
+				<tr>
+					<?php for ($i = 0; $i < 7; $i++): ?>
+					<td><?php print($student[$i]); ?></td>
 					<?php endfor; ?>
-					</tr>
+					<td><a href="edit.php?id=<?php echo $student['id']; ?>">変更する</a></td>
+					<td><a href="delete.php?id=<?php echo $student['id']; ?>">削除する</a></td>
+				</tr>	
 				<?php endwhile; ?>
 			</tbody>
 		</table>
+
+		<a href="create.php">学生を登録する</a>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
