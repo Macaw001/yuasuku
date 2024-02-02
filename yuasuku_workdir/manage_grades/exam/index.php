@@ -13,21 +13,23 @@
 	<body>
 		<!-- tableで成績を一覧表示　-->
 		<?php
-		$exams = $db->query('select * from exams, students where exams.student_id=students.id and');
+		$exams = $db->query('select *, exams.id as exam_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id');
 		?>
 		<table>
 			<thead>
 				<tr>
-					<th>id</th><th>学生番号</th><th>テストの種類</th><th>国語</th><th>英語</th><th>理科</th><th>社会</th><th>数学</th><th>合計</th><th>制作日</th><th>更新日</th>
-				</tr>∫
+					<th>id</th><th>テスト</th><th>名前</th><th>国語</th><th>英語</th><th>理科</th><th>社会</th><th>数学</th><th>合計</th>
+				</tr>
 			</thead>
 			<tbody>
+				<?php $thead = ['exam_id', 'test_name', 'name', 'japanese', 'english', 'science', 'society', 'mathematics', 'sum']; ?>
 				<?php while ($exam = $exams->fetch()): ?>
-					<tr>
-					<?php for ($i = 0; $i <= 30; $i++): ?>
-						<td><?php print($exam[$i]); ?></td>
-					<?php endfor; ?>
-					</tr>
+				<tr>	
+					<?php foreach ($thead as $index): ?>
+					<td><?php echo $exam[$index]; ?></td>
+					<?php endforeach; ?>
+					<td><a href="edit.php?id=<?php echo $exam['exam_id']; ?>">編集する</a></td>
+				</tr>
 				<?php endwhile; ?>
 			</tbody>
 		</table>
