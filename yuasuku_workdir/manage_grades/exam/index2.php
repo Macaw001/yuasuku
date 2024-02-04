@@ -15,13 +15,16 @@
 		<!-- tableで成績を一覧表示　-->
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
+		$test_names = [];
 		?>
 		<ul class="list-inline">
 		<?php while ($test = $tests->fetch()): ?>
 		<li class="list-inline-item"><a href="index2.php?id=<?php echo $test['id']; ?>"><?php echo $test['test_name']; ?></a>/</li>
+		<?php $test_names[$test['id']] = $test['test_name']; ?>  <!-- 連想配列として$test_namesにテスト名を追加し、27行目でそのテスト名を表示する 	-->
 		<?php endwhile; ?>
 
 		</ul>
+		<h6><?php echo $test_names[$_REQUEST['id']]; ?></h6>
 		<table>
 			<thead>
 				<tr>
@@ -53,6 +56,10 @@
 				<?php endwhile; ?>
 			</tbody>
 		</table>
+
+		<form action="download.php" method="post">
+			<input type="submit" name="download" value="csvファイルをダウンロード">
+		</form>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>

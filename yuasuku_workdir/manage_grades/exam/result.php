@@ -40,7 +40,12 @@
 				<?php
 				$subject_name = $_REQUEST['subject_name'];
 			       	$thead = ['student_number', 'name', 'japanese', 'english', 'science', 'society', 'mathematics', 'sum']; 
-				$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=? ORDER BY ' . $subject_name . ' DESC');
+				if ($subject_name === 'student_number') {   // 学籍番号のみ並ぶ順を変える
+					$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=? ORDER BY ' . htmlspecialchars($subject_name));
+				} else {
+
+					$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=? ORDER BY ' . htmlspecialchars($subject_name) . ' DESC');
+				}				//上記のコードは改良が必要。サニタイズ必要？
 				$exams->execute(array($_REQUEST['id']));
  				$exams->execute();
 //				echo $subject_name;
