@@ -1,6 +1,5 @@
-<?php require('../dbconnect.php');
-require('../login_function.php');
-?>
+<?php require('../dbconnect.php'); ?>
+<?php require('../login_funtion.php'); ?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -15,11 +14,12 @@ require('../login_function.php');
 	<body>
 		<?php require('../header.php'); ?>
 		<?php
-		$exams = $db->prepare('INSERT INTO exams SET test_id=?, student_id=?, japanese=?, english=?, science=?, society=?, mathematics=?, sum=?, created_at=NOW()');
-		$exams->execute(array($_POST['test_id'], $_POST['student_id'], $_POST['japanese'], $_POST['english'], $_POST['science'], $_POST['society'], $_POST['mathematics'], $_POST['sum']));
-		echo '登録が完了しました';
+		$students = $db->prepare('UPDATE students SET name=?, grade=?, class=?, student_number=? WHERE id=?');
+		$students->execute(array($_POST['name'], $_POST['grade'], $_POST['class'], $_POST['student_number'], $_POST['id']));
 		?>
-		<a href="index2.php">戻る</a>
+		<p>生徒の情報を編集しました</p>
+		<p><a href="index.php">戻る</a></p>
+
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
 </html>	

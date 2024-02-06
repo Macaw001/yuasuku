@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -12,6 +14,7 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<!-- tableで成績を一覧表示　-->
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
