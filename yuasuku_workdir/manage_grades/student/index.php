@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+$column_items = ['id','name', 'grade', 'class', 'student_number', 'created_at', 'modified_at'];
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -24,7 +26,7 @@
 				<?php while ($student = $students->fetch()): ?>
 				<tr>
 					<?php for ($i = 0; $i < 7; $i++): ?>
-					<td><?php print($student[$i]); ?></td>
+					<td><?php print($student[$column_items[$i]]); ?></td>
 					<?php endfor; ?>
 					<td><a href="edit.php?id=<?php echo $student['id']; ?>">変更する</a></td>
 					<td><a href="delete.php?id=<?php echo $student['id']; ?>">削除する</a></td>

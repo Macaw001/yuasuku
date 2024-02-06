@@ -1,14 +1,46 @@
 <?php require('../dbconnect.php');
 
+session_start();
 
+if ($_COOKIE['login_id'] != '') {
+	$_POST['login_id'] = $_COOKIE['login_id'];
+	$_POST['password'] = $_COOKIE['password'];
+	$_POST['save'] = 'on';
+}
 
+if (!empty($_POST)) {  //login処理
+	if ($_POST['login_id'] != '' && $_POST['password'] !== '') {
+		$login = $db->prepare('SELECT * FROM teachers WHERE login_id=? AND password=? ');
+		$login->execute(array(
+			$_POST['login_id'],
+			$_POST['password'])  //teachersの作成時にsha1でパスワード暗号化する必要がある
+		);
+		$teacher = $login->fetch();
 
+		if ($teacher) { //ログイン成功
+			$_SESSION['login_id'] = $teacher['login_id'];
+			$_SESSION['time'] = time();
+			$_SESSION['teacher_name'] = $teacher['teacher_name'];
+		  	$_SESSION['login_date'] = date('Y年m月j日 G時 i分');
 
-
-
-
-
+			if ($_POST['save'] == 'on') {
+				setcookie('login_id', $_POST['login_id'], time()+60*60*24*14);
+				setcookie('password', $_POST['password'], time()+60*60*24*14);
+		}
+			header('Location: ../exam/index2.php'); exit();
+		} else {
+			$error['login'] = 'failed';
+		}
+	} else {
+		$error['login'] = 'blank';
+	}
+}
 ?>
+
+
+
+
+
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -24,11 +56,17 @@
 		<h2>ログインする</h2>
 
 		<p>教員IDとパスワードを入力してください</p>
-		<form action="index.php" method="post"> 
+		<form action="" method="post"> 
 			<label for="login_id">教員ID</label><br>
-			<input type="text" id="login_id" name="login_id" size="25" maxlength="25" /><br>
+			<input type="text" id="login_id" name="login_id" size="25" maxlength="25" value="<?php echo htmlspecialchars($_POST['login_id'], ENT_QUOTES); ?>" /><br>
+			<?php if ($error['login'] == 'blank'): ?>
+			<p class="error">* 教員アドレスとパスワードをご記入ください</p>
+			<?php endif; ?>
+			<?php if ($error['login'] == 'failed'): ?>
+			<p class="error">* ログインに失敗しました。正しくもう一度ご記入ください</p>
+			<?php endif; ?>
 			<label for="password">パスワード</label><br>
-			<input type="text" id="password" name="password" size="25" maxlength="25" /><br>
+			<input type="password" id="password" name="password" size="25" maxlength="25" value="<?php echo htmlspecialchars($_POST['password'], ENT_QUOTES); ?>" /><br>
 			<label for="save">ログイン情報の記録</label><br>
 			<input id="save" type="checkbox" name="save" value="on"><br>
 			<label for="save">次回からは自動でログインする</label><br>

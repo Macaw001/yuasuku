@@ -1,4 +1,13 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+session_start();
+
+if (isset($_SESSION['login_id']) && $_SESSION['time'] + 3600 > time()) {
+	//login状態
+	$_SESSION['time'] = time();
+} else {
+	header('Location: ../login/login.php'); exit();
+}
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -12,6 +21,9 @@
 	</head>
 
 	<body>
+		<header>
+			<h6><?php echo htmlspecialchars($_SESSION['teacher_name'], ENT_QUOTES) . ' ' .  $_SESSION['login_date'];  ?></h6>
+		</header>	
 		<!-- tableで成績を一覧表示　-->
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
@@ -60,6 +72,7 @@
 		<form action="download.php" method="post">
 			<input type="submit" name="download" value="csvファイルをダウンロード">
 		</form>
+		<a href="create.php">成績を追加する</a>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>

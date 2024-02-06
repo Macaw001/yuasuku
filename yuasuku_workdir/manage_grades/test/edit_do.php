@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -11,6 +13,7 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<?php
 		$tests = $db->prepare('UPDATE tests SET test_name=? where id=?');
 		$tests->execute(array($_POST['test_name'], $_POST['id']));

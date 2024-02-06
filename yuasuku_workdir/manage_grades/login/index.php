@@ -1,14 +1,4 @@
-<?php require('../dbconnect.php');
-$classes = $db->prepare('SELECT id FROM classes WHERE year=? and class_name=?');
-$classes->execute(array($_POST['grade'], $_POST['class']));
-$class = $classes->fetch();
-$class_id = $class['id'];
-
-$students = $db->prepare('INSERT INTO students SET name=?, grade=?, class=?, student_number=?, created_at=NOW(), class_id=?');
-$students->execute(array($_POST['name'], $_POST['grade'], $_POST['class'], $_POST['student_number'], $class_id));
-echo '学生の登録が完了しました';
-
-?>
+<?php require('../dbconnect.php'); ?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -21,7 +11,8 @@ echo '学生の登録が完了しました';
 	</head>
 
 	<body>
-		<a href="index.php">戻る</a>
+
+
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
 </html>	

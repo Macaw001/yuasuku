@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -11,6 +13,7 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<h1>テストを作成</h1>
 
 		<form action="save.php" method="post">	

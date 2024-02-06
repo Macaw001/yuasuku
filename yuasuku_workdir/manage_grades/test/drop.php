@@ -1,4 +1,7 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
+
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -11,6 +14,7 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<?php
 		if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 			$id = $_REQUEST['id'];
