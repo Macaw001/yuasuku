@@ -7,6 +7,15 @@ if (isset($_SESSION['login_id']) && $_SESSION['time'] + 3600 > time()) {
 } else {
 	header('Location: ../login/login.php'); exit();
 }
+echo $_SESSION['id_student'];
+echo $_SESSION['login_id']; 
+
+if (($_POST['reset_student_id'])) {
+	unset($_SESSION['id_student']);
+	echo '検索結果をリセットしました';
+}
+
+
 ?>
 <!doctype html>
 <html lang="ja">
@@ -23,7 +32,22 @@ if (isset($_SESSION['login_id']) && $_SESSION['time'] + 3600 > time()) {
 	<body>
 		<header>
 			<h6><?php echo htmlspecialchars($_SESSION['teacher_name'], ENT_QUOTES) . ' ' .  $_SESSION['login_date'];  ?></h6>
-		</header>	
+			<form action='' method="post">
+				<input type="search" name="search" placeholder="学籍番号か名前で検索">
+				<button type="submit" class="btn btn-warning">検索</button>
+			</form>
+		</header>
+		<?php
+		if ($_POST['search']) {
+			$students = $db->prepare('SELECT id FROM students WHERE name=? or student_number=?');
+			$students->execute(array($_POST['search'], $_POST['search']));
+			$data = $students->fetch();
+			$id_student = $data['id']; 
+			$_SESSION['id_student'] = $id_student; //$data['id']で取得した、studentsテーブルのidをsessionに保存する
+		//	echo 'id_student available';
+		}
+		echo $id_student;
+		?>	
 		<!-- tableで成績を一覧表示　-->
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
@@ -54,8 +78,15 @@ if (isset($_SESSION['login_id']) && $_SESSION['time'] + 3600 > time()) {
 				<!-- theadにインデックスを配列として指定/ examsテーブルからデータをfetchし、テーブル作成 -->	
 				<?php
 			       	$thead = ['student_number', 'name', 'japanese', 'english', 'science', 'society', 'mathematics', 'sum']; 
+
+				if ($_SESSION['id_student']) {
+				$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=? and students.id=?');
+				$exams->execute(array($_REQUEST['id'], $_SESSION['id_student']));
+				} else {
+
 				$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=?');
 				$exams->execute(array($_REQUEST['id']));
+				}
 				?>
 
 				<?php while ($exam = $exams->fetch()): ?>
@@ -73,7 +104,10 @@ if (isset($_SESSION['login_id']) && $_SESSION['time'] + 3600 > time()) {
 			<input type="submit" name="download" value="csvファイルをダウンロード">
 		</form>
 		<a href="create.php">成績を追加する</a>
-
+		<form action"" method="post">
+			<input type="submit" name="reset_student_id" value="検索結果をリセット">
+		</form>
+		
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
 </html>	
