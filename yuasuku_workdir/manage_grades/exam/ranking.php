@@ -10,6 +10,7 @@ require('../login_function.php');
 		<!-- Bootstrap Css -->
 	 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+		<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 		<title></title>
 	</head>
 	<body>
@@ -67,16 +68,35 @@ require('../login_function.php');
 					<?php $num = 1; ?>
 					<?php while ($exam = $exams->fetch()): ?>
 					<tr>
-						<td><?php echo $num; $num++; ?></td>
+					<td class="text-end"><?php switch($num) {
+						case 1:
+							echo '<i class="fa-solid fa-chess-king" style="color: #FFD43B;"></i>';
+							break;
+						case 2:
+							echo '<i class="fa-solid fa-chess-king" style="color: #c0bfbc;"></i>';
+							break;
+						case 3:
+							echo '<i class="fa-solid fa-chess-king" style="color: #b5835a;"></i>';
+							break;				}
+						?>
+					
+						<?php echo $num; ?>
+					</td>
 						<?php foreach ($thead as $index): ?>
-						<td><?php echo $exam[$index]; ?></td>
+						<?php if ($num == 1 or $num == 2 or $num == 3): ?>
+							<td style="font-weight: 700"><?php echo $exam[$index]; ?></td>
+							<?php else: ?>
+							<td><?php echo $exam[$index]; ?></td>
+							<?php endif; ?>
 						<?php endforeach; ?>
 					</tr>
+					<?php $num++; ?>
 					<?php endwhile; ?>
 				</tbody>
 			</table>
 			<?php endforeach; ?>
 		</div>		
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+		<script src="https://kit.fontawesome.com/4488efa2d0.js" crossorigin="anonymous"></script>
 	</body>
 </html>	
