@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -12,17 +14,18 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<!-- tableで成績を一覧表示　-->
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
 		?>
 		<ul class="list-inline">
 		<?php while ($test = $tests->fetch()): ?>
-		<li class="list-inline-item"><a href="index2.php?id=<?php echo $test['id']; ?>"><?php echo $test['test_name']; ?></a>/</li>
+		<li class="list-inline-item"><a href="index2.php?id=<?php echo $test['id']; ?>&grade=<?php echo $_REQUEST['grade']; ?>"><?php echo $test['test_name']; ?></a>/</li>
 		<?php endwhile; ?>
 
 		</ul>
-		<table>
+		<table class="table table-bordered border-praimary">
 			<thead>
 				<tr>
 					<th>学籍番号<a href="result.php?subject_name=student_number&id=<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-caret-down"></a></i></th>

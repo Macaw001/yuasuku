@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -11,6 +13,7 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<?php
 		$exams = $db->prepare('INSERT INTO exams SET test_id=?, student_id=?, japanese=?, english=?, science=?, society=?, mathematics=?, sum=?, created_at=NOW()');
 		$exams->execute(array($_POST['test_id'], $_POST['student_id'], $_POST['japanese'], $_POST['english'], $_POST['science'], $_POST['society'], $_POST['mathematics'], $_POST['sum']));

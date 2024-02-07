@@ -1,4 +1,6 @@
-<?php require('../dbconnect.php'); ?>
+<?php require('../dbconnect.php');
+require('../login_function.php');
+?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -11,6 +13,7 @@
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
 		$students = $db->query('SELECT * FROM students');

@@ -31,12 +31,22 @@ if (($_POST['reset_student_id'])) {
 
 	<body>
 		<header>
-			<h6><?php echo htmlspecialchars($_SESSION['teacher_name'], ENT_QUOTES) . ' ' .  $_SESSION['login_date'];  ?></h6>
-			<form action='' method="post">
-				<input type="search" name="search" placeholder="学籍番号か名前で検索">
-				<button type="submit" class="btn btn-warning">検索</button>
+			<nav class="navbar navbar-expand">
+				<div class="container-fluid">
+				<div class="navbar-collapse">
+				<ul class="navbar-nav">
+							
+					<li class="list-inline-item"><?php echo htmlspecialchars($_SESSION['teacher_name'], ENT_QUOTES) . ' ' .  $_SESSION['login_date'];  ?></li>
+				</ul>
+			<form class="dflex ms-auto" action='' method="post">
+				<input class="form-control form-control-sm me-2" type="search" name="search" placeholder="学籍番号か名前で検索">
+				<button class="btn btn-warning btn-sm" type="submit" class="btn btn-warning">検索</button>
 			</form>
+				</div>	
+				</div>
+			</nav>
 		</header>
+		<div class="container">
 		<?php
 		if ($_POST['search']) {
 			$students = $db->prepare('SELECT id FROM students WHERE name=? or student_number=?');
@@ -61,7 +71,7 @@ if (($_POST['reset_student_id'])) {
 
 		</ul>
 		<h6><?php echo $test_names[$_REQUEST['id']]; ?></h6>
-		<table>
+		<table class="table table-bordered border-primary">
 			<thead>
 				<tr>
 					<th>学籍番号<a href="result.php?subject_name=student_number&id=<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-caret-down"></a></i></th>
@@ -103,11 +113,12 @@ if (($_POST['reset_student_id'])) {
 		<form action="download.php" method="post">
 			<input type="submit" name="download" value="csvファイルをダウンロード">
 		</form>
+		<a href="ranking.php">ランキングへ移動</a>
 		<a href="create.php">成績を追加する</a>
 		<form action"" method="post">
 			<input type="submit" name="reset_student_id" value="検索結果をリセット">
 		</form>
-		
+		</div>		
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
 </html>	
