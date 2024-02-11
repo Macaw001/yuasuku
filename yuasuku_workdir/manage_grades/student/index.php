@@ -1,4 +1,5 @@
 <?php require('../dbconnect.php');
+require('../login_function.php');
 $column_items = ['id','name', 'grade', 'class', 'student_number', 'created_at', 'modified_at'];
 ?>
 <!doctype html>
@@ -13,6 +14,7 @@ $column_items = ['id','name', 'grade', 'class', 'student_number', 'created_at', 
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		
 		<?php
 		$students = $db->query('SELECT * FROM students');
@@ -26,7 +28,11 @@ $column_items = ['id','name', 'grade', 'class', 'student_number', 'created_at', 
 				<?php while ($student = $students->fetch()): ?>
 				<tr>
 					<?php for ($i = 0; $i < 7; $i++): ?>
-					<td><?php print($student[$column_items[$i]]); ?></td>
+						<?php if ($i == 1): ?>
+						<td><a href="student.php?student_id=<?php echo $student['id']; ?>"><?php print($student[$column_items[$i]]); echo $student['id']; ?></a></td>
+						<?php else: ?>
+						<td><?php print($student[$column_items[$i]]); ?></td>
+						<?php endif; ?>	
 					<?php endfor; ?>
 					<td><a href="edit.php?id=<?php echo $student['id']; ?>">変更する</a></td>
 					<td><a href="delete.php?id=<?php echo $student['id']; ?>">削除する</a></td>
@@ -36,6 +42,7 @@ $column_items = ['id','name', 'grade', 'class', 'student_number', 'created_at', 
 		</table>
 
 		<a href="create.php">学生を登録する</a>
+		<a href="../login/logout.php">ログアウト</a>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>

@@ -1,12 +1,4 @@
-<?php require('../dbconnect.php'); ?>
-<?php
-$classes = $db->prepare('SELECT id FROM classes WHERE year=? and class_name=?');
-$classes->execute(array($_POST['grade'], $_POST['class']));
-$class = $classes->fetch();
-$class_id = $class['id'];
-echo $class_id;
-
-?>
+<?php require(dbconnect.php); ?>
 <!doctype html>
 <html lang="ja">
 	<head>
@@ -19,13 +11,7 @@ echo $class_id;
 	</head>
 
 	<body>
-		<?php require('../header.php'); ?>
-		<?php
-		$students = $db->prepare('UPDATE students SET name=?, grade=?, class=?, student_number=?, class_id=? WHERE id=?');
-		$students->execute(array($_POST['name'], $_POST['grade'], $_POST['class'], $_POST['student_number'], $class_id, $_POST['id']));
-		?>
-		<p>生徒の情報を編集しました</p>
-		<p><a href="index.php">戻る</a></p>
+		
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>

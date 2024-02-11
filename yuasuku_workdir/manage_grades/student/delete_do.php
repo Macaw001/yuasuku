@@ -1,4 +1,5 @@
 <?php require('../dbconnect.php');
+require('../login_function.php');
 
 if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 	$id = $_REQUEST['id'];
@@ -18,6 +19,7 @@ if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 	</head>
 
 	<body>
+		<?php require('../header.php'); ?>
 		<p>削除しました</p>
 		<a href="index.php">戻る</a>
 
