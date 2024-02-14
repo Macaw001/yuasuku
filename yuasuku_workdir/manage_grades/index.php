@@ -19,6 +19,12 @@ session_start();
 		</header>
 
 
+		<?php 
+echo 'class_idは: ' .  $_SESSION['class_id'];
+echo 'class_id: ' . $_SESSION['teacher_rank'];
+echo 'year: ' . $_SESSION['year'];
+?>
+
 		<div class="container">  <!-- colを適用したdiv要素に枠線を指定しても、ガターで離すことができない。colを適用したdiv内にdivを作り、それに枠線を適用すること。 -->
 			<div class="row gx-2 mt-3">
 				<div class="col-md-6">

@@ -43,7 +43,7 @@ require('../login_function.php');
 			<?php endforeach; ?>	
 			<label for="sum">合計</label>
 			<input type="text" name="sum" id="sum">
-			<input type="submint" onclick="submit()" value="送信する">
+			<input onclick="submit()" value="送信する">
 		</form>
 
 			

@@ -13,7 +13,7 @@ require('../login_function.php');
 	</head>
 
 	<body>
-		<?php require('../header.php'); ?>
+		<div class="container">
 		<?php
 		if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 			$id = $_REQUEST['id'];
@@ -22,7 +22,7 @@ require('../login_function.php');
 			$student = $students->fetch();
 		}
 		?>
-		<table>
+		<table class="table table-bordered mt-3">
 			<thead>
 				<tr>
 					<th>id</th><th>名前</th><th>学年</th><th>クラス</th><th>学籍番号</th><th>作成日</th><th>更新日</th>
@@ -30,13 +30,19 @@ require('../login_function.php');
 			</thead>
 			<tbody>
 				<tr>
-				<?php for ($i = 0; $i <= 6; $i++): ?>
-					<td><?php echo $student[$i]; ?></td>
-				<?php endfor; ?>
+				<?php 
+				$column_names = ['id','name','grade','class','student_number','created_at','modified_at']; ?>
+				<?php foreach ($column_names as $column_name): ?>
+					<td><?php echo $student[$column_name]; ?></td>
+				<?php endforeach; ?>
 				</tr>
 			</tbody>
 		</table>
-		<a href="index.php">戻る</a>
-		<a href="delete_do.php?id=<?php echo $id; ?>">削除する</a>
+		<div class="row">
+			<div class="mb-3 col-12 text-end">
+				<a  class="btn btn-primary" href="delete_do.php?id=<?php echo $id; ?>">削除する</a>
+			</div>
+		</div>
+		</div>
 	</body>
 </html>	

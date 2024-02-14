@@ -128,28 +128,14 @@ if (($_POST['reset_student_id'])) {
 						<!-- theadにインデックスを配列として指定/ examsテーブルからデータをfetchし、テーブル作成 -->	
 						<?php
 						$thead = ['student_number', 'name', 'japanese', 'english', 'science', 'society', 'mathematics', 'sum']; 
-						if ($_SESSION['teacher_rank'] === 1) {
-							if ($_SESSION['id_student']) {
-							$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND class_id=? and students.id=?');
-							$exams->execute(array($_REQUEST['id'], $_SESSION['class_id'], $_SESSION['id_student']));
-							} else {
 
+						if ($_SESSION['id_student']) {
+						$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND class_id=? and students.id=?');
+						$exams->execute(array($_REQUEST['id'], $_SESSION['class_id'], $_SESSION['id_student']));
+						} else {
 
-							$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND class_id=?');
-							$exams->execute(array($_REQUEST['id'], $_SESSION['class_id']));
-							}
-						} else if ($_SESSION['teacher_rank'] === 2) { //学年主任だった場合のコード。学年をwhereの条件と指定して検索。
-echo 'test3';
-							if ($_SESSION['id_student']) {
-							$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? and students.id=? and classes.year=?');
-							$exams->execute(array($_REQUEST['id'], $_SESSION['id_student'], $_SESSION['year']));
-							echo 'test2';
-							} else {
-
-							$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND classes.year=?');
-							$exams->execute(array($_REQUEST['id'], $_SESSION['year']));
-							echo 'test';
-							}
+						$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND class_id=?');
+						$exams->execute(array($_REQUEST['id'], $_SESSION['class_id']));
 						}
 						?>
 

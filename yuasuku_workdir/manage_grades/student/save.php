@@ -5,10 +5,14 @@ $classes->execute(array($_POST['grade'], $_POST['class']));
 $class = $classes->fetch();
 $class_id = $class['id'];
 
-$students = $db->prepare('INSERT INTO students SET name=?, grade=?, class=?, student_number=?, created_at=NOW(), class_id=?');
-$students->execute(array($_POST['name'], $_POST['grade'], $_POST['class'], $_POST['student_number'], $class_id));
-echo '学生の登録が完了しました';
+if ($class_id === $_SESSION['class_id']) {
 
+	$students = $db->prepare('INSERT INTO students SET name=?, grade=?, class=?, student_number=?, created_at=NOW(), class_id=?');
+	$students->execute(array($_POST['name'], $_POST['grade'], $_POST['class'], $_POST['student_number'], $class_id));
+echo '学生の登録が完了しました';
+} else {
+	header('Location: ../login/error.php');
+}
 ?>
 <!doctype html>
 <html lang="ja">

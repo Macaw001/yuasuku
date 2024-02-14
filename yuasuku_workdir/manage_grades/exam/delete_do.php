@@ -1,20 +1,22 @@
 <?php require('../dbconnect.php');
 require('../login_function.php');
 
-$classes = $db->prepare('SELECT *, classes.id as class_id FROM students, classes WHERE students.class_id=classes.id AND students.id=?');
-$classes->execute(array($_REQUEST['id']));
-$class = $classes->fetch();
-echo $class['class_id'];
+$column_names = [
+	'japanese'=>'国語',
+	'english'=>'英語',
+	'science'=>'理科',
+	'society'=>'社会',
+	'mathematics'=>'数学',
+	'sum'=>'合計'
+];
 
-if ($class['id'] === $_SESSION['class_id']) {
-	if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
-		$id = $_REQUEST['id'];
-		$students = $db->prepare('DELETE FROM students WHERE id=?');
-		$students->execute(array($id));
-//		echo 'class照合';
-	}
+if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
+	$exams = $db->prepare('DELETE FROM exams WHERE id=?');
+	$exams->execute(array($_REQUEST['id']));
 } else {
-	header('Location: ../login/error.php');
+	echo "<p>テストの削除がうまく行きませんでした</p><p>２秒後にテスト一覧に戻ります</p>";
+	header("refresh:2;url=index2.php");
+	$error['fail'] = true;
 }
 ?>
 <!doctype html>
@@ -28,11 +30,13 @@ if ($class['id'] === $_SESSION['class_id']) {
 		<title></title>
 	</head>
 
-	<body>
-		<?php require('../header.php'); ?>
-		<p>削除しました</p>
-		<a href="index.php">戻る</a>
-
+<body>
+	<?php if ($error['fail'] !== true): ?>
+	<div class="container">
+			<p>テストを削除しました</p>	
+		<a href="index2.php">テスト一覧へ戻る</a>	
+		</div>
+		<?php endif; ?>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 	</body>
 </html>	

@@ -1,19 +1,41 @@
 <?php require('../dbconnect.php');
-require('../login_function.php');
+session_start();
+
+if (isset($_SESSION['login_id']) && $_SESSION['time'] + 3600 > time()) {
+	//login状態
+	$_SESSION['time'] = time();
+} else {
+	header('Location: ../login/login.php'); exit();
+}
+//echo $_SESSION['id_student'];
+//echo $_SESSION['login_id']; 
+
+if (($_POST['reset_student_id'])) {
+	unset($_SESSION['id_student']);
+	unset($_SESSION['name_student']);
+	echo '検索結果をリセットしました';
+}
+
+
 ?>
-				<!-- theadにインデックスを配列として指定/ examsテーブルからデータをfetchし、テーブル作成 -->	
-				<?php
+<?php
+				if ($_REQUEST['subject_name']) {
+				$_SESSION['subject_name'] = htmlspecialchars($_REQUEST['subject_name'], ENT_QUOTES, 'utf-8');
+		//		echo $_SESSION['subject_name'];
 				$subject_name = $_REQUEST['subject_name'];
 			       	$thead = ['student_number', 'name', 'japanese', 'english', 'science', 'society', 'mathematics', 'sum']; 
 				if ($subject_name === 'student_number') {   // 学籍番号のみ並ぶ順を変える
-					$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=? ORDER BY ' . htmlspecialchars($subject_name));
+					$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND class_id=? ORDER BY ' . htmlspecialchars($subject_name));
 				} else {
 
-					$exams = $db->prepare('select *, exams.id as exam_id, tests.id as test_id from exams, students, tests where exams.student_id=students.id and exams.test_id=tests.id and test_id=? ORDER BY ' . htmlspecialchars($subject_name) . ' DESC');
+					$exams = $db->prepare('select *, exams.id as exam_id from exams, students, classes where exams.student_id=students.id and classes.id=students.class_id AND test_id=? AND class_id=?  ORDER BY ' . htmlspecialchars($subject_name) . ' DESC');
 				}				//上記のコードは改良が必要。サニタイズ必要？
-				$exams->execute(array($_REQUEST['id']));
+				$exams->execute(array($_REQUEST['id'], $_SESSION['class_id']));
  				$exams->execute();
-//				echo $subject_name;
+				//				echo $subject_name;
+				} else {
+					echo 'subject_nameが入っていない';
+				}
 				?>
 				
 				<?php $subjects = ['student_number'=>'学籍番号', 'japanese'=>'国語', 'english'=>'英語', 'science'=>'理科', 'society'=>'社会', 'mathematics'=>'数学', 'sum'=>'合計']; ?>			
@@ -30,9 +52,84 @@ require('../login_function.php');
 	</head>
 
 	<body>
-		<?php require('../header.php'); ?>
-		<!-- tableで成績を一覧表示　-->
-		<div class="container mt-2">
+		<header>
+			<nav class="navbar navbar-expand navbar-dark bg-dark">
+				<div class="container-fluid">
+					<div class="navbar-collapse">
+						<ul class="navbar-nav">
+							<li class="nav-item"><a href="/learn/yuasuku_workdir/manage_grades/index.php" class="nav-link">Top</a></li>
+							<li class="nav-item"><a href="/learn/yuasuku_workdir/manage_grades/exam/index2.php" class="nav-link">テスト結果</a></li>
+							<li class="nav-item"><a href="/learn/yuasuku_workdir/manage_grades/student/index.php" class="nav-link">生徒</a></li>
+							<li class="nav-item"><a href="/learn/yuasuku_workdir/manage_grades/test/index.php" class="nav-link">テスト</a></li>
+
+						</ul>
+						<div class="d-flex ms-auto">			
+							<a style="color: gray" class="nav-link"><?php echo htmlspecialchars($_SESSION['teacher_name'], ENT_QUOTES) . ' ' .  $_SESSION['login_date'];  ?></a>
+						</div>
+					</div>
+				</div>
+			</nav>	
+			
+		</header>
+
+
+		<div class="container">	
+
+		<h1 class="mt-3">テスト結果一覧</h1>
+		
+			
+			
+		<div class="card">
+			<div class="card-body">
+				<h3 class="card-title">生徒検索</h3>	
+				<?php
+				if ($_POST['search']) {
+					$students = $db->prepare('SELECT * FROM students WHERE name=? or student_number=?');
+					$students->execute(array($_POST['search'], $_POST['search']));
+					$data = $students->fetch();
+					$name_student = $data['name'];
+					$id_student = $data['id']; 
+					$_SESSION['id_student'] = $id_student; //$data['id']で取得した、studentsテーブルのidをsessionに保存する
+				//	echo 'id_student available';
+					$_SESSION['name_student'] = $name_student;
+				}
+				echo $id_student;
+				echo $name_student;
+				?>	
+				<!-- tableで成績を一覧表示　-->
+				<?php
+				$tests = $db->query('SELECT * FROM tests');
+				$test_names = [];
+				?>
+				<ul class="list-inline">
+				<?php while ($test = $tests->fetch()): ?>
+				<li class="list-inline-item"><a href="index2.php?id=<?php echo $test['id']; ?>"><?php echo $test['test_name']; ?></a>/</li>
+				<?php $test_names[$test['id']] = $test['test_name']; ?>  <!-- 連想配列として$test_namesにテスト名を追加し、27行目でそのテスト名を表示する 	-->
+				<?php endwhile; ?>
+				</ul>
+			<h5>選択項目</h5>
+			<ul class="list-unstyled">
+			<li class="list-inline-item">テストの種類</li>/<li class="list-inline-item"><?php echo $test_names[$_REQUEST['id']]; ?></li>
+			<li class="list-inline-item">選択中生徒</li>/<li class="list-inline-item"><?php echo $_SESSION['name_student']; ?></li>
+		</div>
+		</div>
+
+		<div class="card">
+			<div class="card-body pb-1">
+				<h3>フィルター</h3>
+				<form style="width:400px"  action='' method="post">
+					<input class="mb-1 form-control form-control-sm me-2" type="search" name="search" placeholder="学籍番号か名前で検索">
+					<button class="btn btn-warning btn-sm mb-0" type="submit" class="btn btn-warning">検索</button>
+				</form>
+					<form action"" method="post">
+						<input type="submit" name="reset_student_id" value="検索結果をリセット">
+					</form>
+			</div>
+		</div>
+		
+		<div class="card">
+			<div class="card-body">
+				<h3 class="card-title">テスト結果一覧</h3>
 		<?php
 		$tests = $db->query('SELECT * FROM tests');
 		?>
@@ -66,16 +163,81 @@ require('../login_function.php');
 				<?php endwhile; ?>
 			</tbody>
 		</table>
+		
+		<div class="card">
+			<div class="card-body pb-0">
+				<h3 class="card-title">ランキング</h3>
+				<a href="ranking.php">ランキングへ移動</a>
+				<?php
+				$tests = $db->query('SELECT * FROM tests');
+				?>
+				<ul class="list-inline">
+				<?php while ($test = $tests->fetch()): ?>
+				<li class="list-inline-item"><a href="ranking.php?id=<?php echo $test['id']; ?>"><?php echo $test['test_name']; ?></a>/</li>
+				<?php $test_names[$test['id']] = $test['test_name']; ?>  <!-- 連想配列として$test_namesにテスト名を追加し、27行目でそのテスト名を表示する 	-->
+				<?php endwhile; ?>
+				</ul>
+			</div>
+		</div>	
+		<div class="card mb-4">
+			<div class="hstack">
+					<form action="download.php" method="post">
+						<input type="submit" name="download" value="csvファイルをダウンロード">
+					</form>
+					<div class="ms-auto">
+					<a href="create.php">成績を追加する</a>
+					<a href="../login/logout.php">ログアウトする</a>
+					</div>
+			</div>
+		</div>		
+
+		<!-- モーダル部分を作成 -->
+		<div class="modal fade" id="edit" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5>成績を編集する</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div id="modal-body-edit">
+					</div>
+				</div>
+			</div>
 		</div>
+		<div class="modal fade" id="delete" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5>成績を削除する</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div id="modal-body-delete">
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 		<script>
-			let sortby = document.getElementById('sort').textContent;
-			let ths = document.querySelectorAll("th");
-			let selectedHeading = Array.from(ths);
-			console.log(selectedHeading);
-			for (const data of selectedHeading) {
-				console.log(data.textContent);
+			function createModal(url, num) {
+				let xhr = new XMLHttpRequest();
+				xhr.open('GET', './' + url + '.php?id=' + num, true);
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState === 4) {
+						if (xhr.status === 200) {
+							document.getElementById('modal-body-' + url).innerHTML = xhr.responseText;
+							let myModal = new bootstrap.Modal(document.getElementById(url));
+							myModal.show();
+						} else {
+							console.log('Error: ' + xhr.status);
+						}
+					}
+				};
+				xhr.send();
 			}
 		</script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
 	</body>
 </html>	

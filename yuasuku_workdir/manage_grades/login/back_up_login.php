@@ -14,7 +14,7 @@ if ($_COOKIE['login_id'] != '') {
 
 if (!empty($_POST)) {  //login処理
 	if ($_POST['login_id'] != '' && $_POST['password'] != '') {
-		$login = $db->prepare('SELECT * FROM teachers, classes, teacher_classes WHERE teacher_classes.class_id=classes.id AND teachers.id=teacher_classes.teacher_id AND login_id=? AND password=?');
+		$login = $db->prepare('SELECT * FROM teachers WHERE login_id=? AND password=?');
 		$login->execute(array(
 			$_POST['login_id'],
 			$_POST['password'])  //teachersの作成時にsha1でパスワード暗号化する必要がある
@@ -27,10 +27,6 @@ if (!empty($_POST)) {  //login処理
 			$_SESSION['time'] = time();
 			$_SESSION['teacher_name'] = $teacher['teacher_name'];
 		  	$_SESSION['login_date'] = date('Y年m月j日 G時 i分');
-			$_SESSION['teacher_rank'] = $teacher['teacher_rank'];
-			$_SESSION['class_id'] = $teacher['class_id'];
-			$_SESSION['teacher_id'] = $teacher['teacher_id'];
-			$_SESSION['year'] = $teacher['year'];
 
 			if ($_POST['save'] == 'on') {
 				setcookie('login_id', $_POST['login_id'], time()+60*60*24*14);

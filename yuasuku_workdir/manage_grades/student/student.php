@@ -1,17 +1,28 @@
 <?php require('../dbconnect.php');
 require('../login_function.php');
 
-//生徒のidを利用してテストのデータを取得
-$exams = $db->prepare('SELECT * FROM exams, students, tests WHERE students.id=exams.student_id and tests.id=exams.test_id and student_id=?');
-$exams->execute(array($_REQUEST['student_id']));
+$exams_check = $db->prepare('SELECT * FROM exams, students, tests WHERE students.id=exams.student_id and tests.id=exams.test_id and student_id=?');
+$exams_check->execute(array($_REQUEST['student_id']));
+$exam_check = $exams_check->fetch();
 
-//名前を取得する
-$students = $db->prepare('SELECT * FROM students WHERE id=?');
-$students->execute(array($_REQUEST['student_id']));
-$student = $students->fetch();
-$student_name = $student['name'];
+//studentsテーブルのclass_idの情報と、ログインしている教師がsessionに保存しているclass_idの情報を条件文にかける
+if ($exam_check['class_id'] === $_SESSION['class_id']) {
 
-$column_names = ['test_name'=>'テスト名', 'japanese'=>'国語', 'english'=>'英語', 'science'=>'理科', 'society'=>'社会', 'mathematics'=>'数学', 'sum'=>'合計'];
+
+	//生徒のidを利用してテストのデータを取得
+	$exams = $db->prepare('SELECT * FROM exams, students, tests WHERE students.id=exams.student_id and tests.id=exams.test_id and student_id=?');
+	$exams->execute(array($_REQUEST['student_id']));
+
+	//名前を取得する
+	$students = $db->prepare('SELECT * FROM students WHERE id=?');
+	$students->execute(array($_REQUEST['student_id']));
+	$student = $students->fetch();
+	$student_name = $student['name'];
+
+	$column_names = ['test_name'=>'テスト名', 'japanese'=>'国語', 'english'=>'英語', 'science'=>'理科', 'society'=>'社会', 'mathematics'=>'数学', 'sum'=>'合計'];
+} else {
+	header('Location: ../login/error.php');
+}
 ?>
 <!doctype html>
 <html lang="ja">
